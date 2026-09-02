@@ -72,16 +72,27 @@ export function Results({ db, stats, result, running, weights, weightsRunning, o
         Stat weights{' '}
         <button className="link" onClick={onWeights} disabled={weightsRunning}>{weightsRunning ? 'computing…' : weights ? 'recompute' : 'compute'}</button>
       </h3>
-      {weights && (
-        <table className="kv">
-          <thead><tr><th>Stat</th><th>DPS / point</th><th>AP equiv.</th></tr></thead>
-          <tbody>
-            {weights.weights.map((w) => (
-              <tr key={w.stat}><td>{w.label}</td><td>{signed(w.perPoint, 3)}</td><td>{fmt(w.relative, 2)}</td></tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <div className="tiny muted">DPS gained per +1 of each stat with the current gear, talents and settings. "AP equiv." = how many Attack Power one point is worth.</div>
+      {!weights && !weightsRunning && <div className="tiny muted">Click compute (runs 13 extra simulations, a few seconds).</div>}
+      {weights && (() => {
+        const rows = [...weights.weights].sort((a, b) => b.perPoint - a.perPoint)
+        const max = Math.max(...rows.map((w) => Math.abs(w.perPoint)), 1e-9)
+        return (
+          <table className="kv weights">
+            <thead><tr><th>Stat</th><th>DPS / point</th><th>AP equiv.</th><th></th></tr></thead>
+            <tbody>
+              {rows.map((w) => (
+                <tr key={w.stat}>
+                  <td>{w.label}</td>
+                  <td className="num">{signed(w.perPoint, 3)}</td>
+                  <td className="num">{fmt(w.relative, 2)}</td>
+                  <td className="bar-cell"><div className={'bar' + (w.perPoint < 0 ? ' neg' : '')} style={{ width: `${(Math.abs(w.perPoint) / max) * 100}%` }} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      })()}
 
       {compare && (
         <>
