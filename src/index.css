@@ -49,6 +49,11 @@ main { display: grid; grid-template-columns: 360px 1fr 1fr; gap: 16px; padding: 
 .pd-bottom { grid-column: 1 / -1; display: flex; justify-content: center; gap: 8px; }
 .pd-slot { width: 56px; height: 56px; padding: 0; position: relative; display: flex; align-items: center; justify-content: center; background: #1d1f25; border: 2px solid #3a3f4b; border-radius: 6px; cursor: pointer; color: #6b7280; }
 .pd-slot:hover { background: #2a2e38; }
+.pd-slot .item-icon { border-radius: 4px; }
+.pd-slot:hover .item-icon { filter: brightness(1.2); }
+.item-icon { display: block; flex: none; object-fit: cover; background: #0b0c0f; }
+.cmp-item .item-icon { float: left; margin: 2px 6px 0 0; border-radius: 3px; }
+.item-icon.empty { display: inline-block; border: 1px dashed #3a3f4b; border-radius: 3px; }
 .pd-slot.active { box-shadow: 0 0 0 2px #fff8; }
 .pd-slot.comparing { box-shadow: 0 0 0 2px #8ab4f8; }
 .pd-slot.q2 { border-color: #1eff00; } .pd-slot.q3 { border-color: #0070dd; } .pd-slot.q4 { border-color: #a335ee; } .pd-slot.q5 { border-color: #ff8000; } .pd-slot.q1 { border-color: #ddd; }
@@ -59,10 +64,10 @@ main { display: grid; grid-template-columns: 360px 1fr 1fr; gap: 16px; padding: 
 .picker { display: flex; flex-direction: column; width: 100%; background: #15171cd0; border: 1px solid #2b2f38; border-radius: 6px; padding: 8px; }
 .picker-head { display: flex; gap: 8px; align-items: baseline; }
 .picker-head strong { flex: 1; }
-.picker-current { padding: 4px 0 6px; border-bottom: 1px solid #262a33; margin-bottom: 4px; }
+.picker-current { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0 6px; border-bottom: 1px solid #262a33; margin-bottom: 4px; }
 .slot-search { width: 100%; margin: 4px 0; }
 .picker-list { flex: 1; max-height: 420px; overflow: auto; margin: 0; padding: 0; list-style: none; }
-.picker-list li { padding: 4px 6px; cursor: pointer; border-bottom: 1px solid #262a33; }
+.picker-list li { display: flex; gap: 8px; align-items: center; padding: 4px 6px; cursor: pointer; border-bottom: 1px solid #262a33; }
 .picker-list li:hover { background: #2a2e38; }
 .picker-list li.selected { background: #232a3a; }
 

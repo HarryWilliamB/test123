@@ -73,6 +73,7 @@ export interface Item {
   classes?: number
   source?: string
   verified?: boolean
+  icon?: string
 }
 
 export interface ItemSet {

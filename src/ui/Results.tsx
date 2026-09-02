@@ -4,6 +4,7 @@ import type { StatWeight } from '../engine/statWeights'
 import type { GearSlot, ItemDb } from '../engine/types'
 import { SLOT_LABELS } from '../engine/types'
 import { QUALITY_CLASS, fmt, itemSummary, signed } from './format'
+import { ItemIcon } from './ItemIcon'
 
 interface Props {
   db: ItemDb
@@ -93,9 +94,10 @@ export function Results({ db, stats, result, running, weights, weightsRunning, o
                 const d = r.dps - compare.baseDps
                 return (
                   <tr key={r.itemId} className={d > 0.05 ? 'up' : d < -0.05 ? 'down' : ''}>
-                    <td>
+                    <td className="cmp-item">
+                      <ItemIcon icon={it.icon} size={24} />
                       <a href={`https://octowow.st/db/?item=${it.id}`} target="_blank" rel="noreferrer" className={QUALITY_CLASS[it.quality]}>{it.name}</a>
-                      <span className="muted tiny"> {it.ilvl}{it.verified ? '' : '*'}</span>
+                      <span className="muted tiny"> {it.ilvl}</span>
                       <div className="tiny muted">{itemSummary(it)}{it.source ? ` — ${it.source}` : ''}</div>
                     </td>
                     <td className="num">{signed(d)}</td>

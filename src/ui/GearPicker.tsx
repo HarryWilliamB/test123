@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { itemsForSlot } from '../engine/items'
 import { SLOT_LABELS, type Gear, type GearSlot, type Item, type ItemDb } from '../engine/types'
 import { QUALITY_CLASS, itemSummary } from './format'
+import { ItemIcon } from './ItemIcon'
 
 interface Props {
   db: ItemDb
@@ -45,9 +46,13 @@ function Slot({ slot, item, active, comparing, onClick }: {
       onClick={onClick}
       title={item ? `${item.name}\n${itemSummary(item)}` : SLOT_LABELS[slot]}
     >
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
-        <path d={SLOT_ICON[slot]} />
-      </svg>
+      {item?.icon ? (
+        <ItemIcon icon={item.icon} size={52} />
+      ) : (
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+          <path d={SLOT_ICON[slot]} />
+        </svg>
+      )}
       <span className="pd-name">{item ? item.name : SLOT_LABELS[slot]}</span>
     </button>
   )
@@ -89,10 +94,13 @@ function Picker({ db, slot, gear, onChange, comparing, onCompare, onClose }: {
       </div>
       {current && (
         <div className="picker-current tiny">
-          <span className={QUALITY_CLASS[current.quality]}>{current.name}</span>
-          <span className="muted"> ilvl {current.ilvl}{current.verified ? '' : ' *'}</span>
-          <div className="muted">{itemSummary(current)}</div>
-          {current.source && <div className="muted">{current.source}</div>}
+          <ItemIcon icon={current.icon} size={36} />
+          <div>
+            <span className={QUALITY_CLASS[current.quality]}>{current.name}</span>
+            <span className="muted"> ilvl {current.ilvl}</span>
+            <div className="muted">{itemSummary(current)}</div>
+            {current.source && <div className="muted">{current.source}</div>}
+          </div>
         </div>
       )}
       <input
@@ -107,9 +115,12 @@ function Picker({ db, slot, gear, onChange, comparing, onCompare, onClose }: {
       <ul className="picker-list">
         {filtered.map((it) => (
           <li key={it.id} className={it.id === current?.id ? 'selected' : ''} onClick={() => pick(it)}>
-            <span className={QUALITY_CLASS[it.quality]}>{it.name}</span>
-            <span className="muted"> ilvl {it.ilvl}{it.verified ? '' : ' *'}</span>
-            <div className="tiny muted">{itemSummary(it)}{it.source ? ` — ${it.source}` : ''}</div>
+            <ItemIcon icon={it.icon} size={28} />
+            <div>
+              <span className={QUALITY_CLASS[it.quality]}>{it.name}</span>
+              <span className="muted"> ilvl {it.ilvl}</span>
+              <div className="tiny muted">{itemSummary(it)}{it.source ? ` — ${it.source}` : ''}</div>
+            </div>
           </li>
         ))}
         {filtered.length === 0 && candidates.length > 0 && <li className="muted">no matches</li>}
@@ -153,7 +164,6 @@ export function GearPicker({ db, gear, onChange, compareSlot, onCompare }: Props
         <div className="pd-col">{RIGHT.map(renderSlot)}</div>
         <div className="pd-bottom">{BOTTOM.map(renderSlot)}</div>
       </div>
-      <div className="tiny muted">* stats from Turtle-WoW 1.18 database, not yet verified against octowow.st</div>
     </div>
   )
 }
