@@ -48,7 +48,25 @@ export interface CharacterStats {
   windfuryPct: number
   /** Raw sums for display */
   gearStats: ItemStats
+  sets: SetStatus[]
 }
+
+export interface SetStatus {
+  name: string
+  count: number
+  bonuses: { need: number; text: string; active: boolean; modelled: boolean }[]
+}
+
+const SET_BONUS_RE = [
+  /\+\d+ Attack Power/,
+  /Improves your chance to get a critical strike by \d+%/,
+  /Improves your chance to hit by \d+%/,
+  /\+\d+ (Strength|Agility|Stamina|Intellect|Spirit)/,
+  /Increases damage and healing done by magical spells and effects by up to \d+/,
+  /critical strike with (Nature spells|all Shock spells|spells) by \d+%/,
+  /Restores \d+ mana per 5 sec/,
+  /\d+% chance of dealing \d+ to \d+ (Fire|Nature|Frost|Shadow|Arcane) damage on a successful melee attack/,
+]
 
 function addStats(into: ItemStats, from: ItemStats) {
   for (const [k, v] of Object.entries(from)) {
@@ -153,11 +171,17 @@ export function computeStats(db: ItemDb, gear: Gear, points: TalentPoints, cfg: 
   // set bonuses: only stat-like bonuses we can parse
   const setCounts = new Map<number, number>()
   for (const it of Object.values(equipped)) if (it?.setId) setCounts.set(it.setId, (setCounts.get(it.setId) ?? 0) + 1)
+  const sets: SetStatus[] = []
   for (const [setId, n] of setCounts) {
     const set = db.sets[String(setId)]
     if (!set) continue
+    const status: SetStatus = { name: set.name, count: n, bonuses: [] }
+    sets.push(status)
     for (const [need, text] of set.bonuses) {
-      if (n < need) continue
+      const active = n >= need
+      const modelled = SET_BONUS_RE.some((rx) => rx.test(text))
+      status.bonuses.push({ need, text, active, modelled })
+      if (!active) continue
       let m: RegExpMatchArray | null
       if ((m = text.match(/\+(\d+) Attack Power/))) addStats(gearStats, { ap: Number(m[1]) })
       else if ((m = text.match(/Improves your chance to get a critical strike by (\d+)%/))) addStats(gearStats, { crit: Number(m[1]) })
@@ -166,6 +190,11 @@ export function computeStats(db: ItemDb, gear: Gear, points: TalentPoints, cfg: 
         const key = { Strength: 'str', Agility: 'agi', Stamina: 'sta', Intellect: 'int', Spirit: 'spi' }[m[2]] as keyof ItemStats
         addStats(gearStats, { [key]: Number(m[1]) })
       } else if ((m = text.match(/Increases damage and healing done by magical spells and effects by up to (\d+)/))) addStats(gearStats, { sp: Number(m[1]) })
+      else if ((m = text.match(/critical strike with (?:Nature spells|all Shock spells|spells) by (\d+)%/))) addStats(gearStats, { spellCrit: Number(m[1]) })
+      else if ((m = text.match(/Restores (\d+) mana per 5 sec/))) addStats(gearStats, { mp5: Number(m[1]) })
+      else if ((m = text.match(/(\d+)% chance of dealing (\d+) to (\d+) (Fire|Nature|Frost|Shadow|Arcane) damage on a successful melee attack/))) {
+        procs.push({ spellId: 0, ppm: 0, procChance: Number(m[1]), text: `${set.name} (${need})`, school: 1, basePoints: Number(m[2]), dieSides: Number(m[3]) - Number(m[2]) + 1 })
+      }
     }
   }
 
@@ -221,5 +250,6 @@ export function computeStats(db: ItemDb, gear: Gear, points: TalentPoints, cfg: 
     targetArmor: Math.max(0, cfg.targetArmor - buffs.armorReduction),
     windfuryPct: all.windfuryPct ?? 0,
     gearStats,
+    sets,
   }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { itemsForSlot } from '../engine/items'
+import type { SetStatus } from '../engine/stats'
 import { SLOT_LABELS, type Gear, type GearSlot, type Item, type ItemDb } from '../engine/types'
 import { QUALITY_CLASS, itemSummary } from './format'
 import { ItemIcon } from './ItemIcon'
@@ -10,6 +11,7 @@ interface Props {
   onChange: (gear: Gear) => void
   compareSlot: GearSlot | null
   onCompare: (slot: GearSlot | null) => void
+  sets: SetStatus[]
 }
 
 const LEFT: GearSlot[] = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist']
@@ -129,7 +131,7 @@ function Picker({ db, slot, gear, onChange, comparing, onCompare, onClose }: {
   )
 }
 
-export function GearPicker({ db, gear, onChange, compareSlot, onCompare }: Props) {
+export function GearPicker({ db, gear, onChange, compareSlot, onCompare, sets }: Props) {
   const [openSlot, setOpenSlot] = useState<GearSlot | null>(null)
   const find = (slot: GearSlot) => (gear[slot] !== undefined ? db.items.find((i) => i.id === gear[slot]) : undefined)
   const renderSlot = (slot: GearSlot) => (
@@ -164,6 +166,20 @@ export function GearPicker({ db, gear, onChange, compareSlot, onCompare }: Props
         <div className="pd-col">{RIGHT.map(renderSlot)}</div>
         <div className="pd-bottom">{BOTTOM.map(renderSlot)}</div>
       </div>
+      {sets.length > 0 && (
+        <div className="sets tiny">
+          {sets.map((s) => (
+            <div key={s.name} className="set">
+              <strong className="q4">{s.name} ({s.count}/{Math.max(...s.bonuses.map((b) => b.need))})</strong>
+              {s.bonuses.map((b, i) => (
+                <div key={i} className={b.active ? (b.modelled ? 'set-on' : 'set-on muted') : 'muted set-off'} title={b.active && !b.modelled ? 'Active, but not modelled by the simulator' : ''}>
+                  ({b.need}) {b.text}{b.active && !b.modelled ? ' — not simulated' : ''}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

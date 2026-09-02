@@ -101,7 +101,7 @@ export default function App() {
       </header>
       <main>
         <aside className="col left"><Settings cfg={mergedCfg} onChange={setCfg} points={points} onPoints={setPoints} /></aside>
-        <section className="col mid"><GearPicker db={db} gear={gear} onChange={setGear} compareSlot={compareSlot} onCompare={setCompareSlot} /></section>
+        <section className="col mid"><GearPicker db={db} gear={gear} onChange={setGear} compareSlot={compareSlot} onCompare={setCompareSlot} sets={stats.sets} /></section>
         <section className="col right">
           <Results
             db={db}

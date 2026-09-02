@@ -60,6 +60,9 @@ main { display: grid; grid-template-columns: 360px 1fr 1fr; gap: 16px; padding: 
 .pd-slot:not(.empty) { color: #d4b26a; }
 .pd-name { position: absolute; left: -2px; right: -2px; bottom: -2px; font-size: 8px; line-height: 1.1; padding: 1px 2px; background: #000c; border-radius: 0 0 4px 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #ddd; }
 .pd-slot.empty .pd-name { color: #888; }
+.sets { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.set-on { color: #1eff00; }
+.set-on.muted { color: #8a9a7a; }
 .pd-hint { align-self: center; text-align: center; width: 100%; }
 .picker { display: flex; flex-direction: column; width: 100%; background: #15171cd0; border: 1px solid #2b2f38; border-radius: 6px; padding: 8px; }
 .picker-head { display: flex; gap: 8px; align-items: baseline; }
