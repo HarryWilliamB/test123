@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MECHANIC_FIELDS, type BuffFlags, type Enchants, type SimConfig } from '../engine/config'
+import { ItemIcon } from './ItemIcon'
 import { TALENTS, encodePoints, pointsFromUrl, talentAt, treeTotals, type TalentPoints } from '../engine/talents'
 
 interface Props {
@@ -83,7 +84,7 @@ function TalentTree({ tree, points, onPoints }: { tree: number; points: TalentPo
           onPoints(next)
         }}
       >
-        {t && <img src={`https://octowow.st/db/images/icons/small/${t.icon}.jpg`} alt="" onError={(e) => ((e.target as HTMLImageElement).style.visibility = 'hidden')} />}
+        {t && <ItemIcon icon={t.icon} size={26} />}
         {t && <span className="rank">{rank}/{t.ranks}</span>}
       </div>,
     )
