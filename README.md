@@ -16,6 +16,12 @@ npm run lint     # oxlint
 
 Node 22 (see `.nvmrc`).
 
+## Hosted version
+
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/pages.yml`:
+<https://harrywilliamb.github.io/enhance-dps-test/>. One-time setup: repo
+Settings → Pages → Source: **GitHub Actions**.
+
 ## Data
 
 - `src/data/items.json` — 3.8k shaman-usable items (ilvl 50+). Stats, weapon
