@@ -16,13 +16,21 @@ npm run lint     # oxlint
 
 Node 22 (see `.nvmrc`).
 
+## Hosted version
+
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/pages.yml`:
+<https://harrywilliamb.github.io/enhance-dps-test/>. One-time setup: repo
+Settings → Pages → Source: **GitHub Actions**.
+
 ## Data
 
-- `src/data/items.json` — 3.4k shaman-usable items (ilvl 50+). Baseline stats
-  come from the Turtle-WoW 1.18 world DB (`item_template`/`spell_template`);
-  items that were verified against octowow.st/db tooltips are flagged
-  `verified: true`, unverified ones show a `*` in the UI. Drop sources come from
-  AtlasLoot.
+- `src/data/items.json` — 3.8k shaman-usable items (ilvl 50+). Stats, weapon
+  damage, effects and icon names are taken from octowow.st/db tooltips (every
+  item was fetched; ids with no OctoWow tooltip are dropped). Proc details
+  (`procs`) come from the Turtle-WoW 1.18 `spell_template`. Drop sources come
+  from AtlasLoot.
+- `public/icons/*.png` — item icons (56px) downloaded from octowow.st, so
+  OctoWow/Turtle custom icons are included.
 - `src/data/talents.json` — the 49 shaman talents scraped from
   octowow.st/talents, including OctoWow-specific ones (Lightning Strike,
   Elemental Weapons, Improved Windfury, ...).
